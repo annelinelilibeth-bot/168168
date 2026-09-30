@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="1vzQBH6Q2660YORHeDFntM">
+<head data-page-node-id="ENBU9HFH9elCEsU78MLU0u">
+<meta charset="UTF-8" data-page-node-id="ZHPRLboIi5Vs7OIT2Cz4zK">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="GBb7ynOj0jGxvLZl0lMAEf">
+<title>剧组制作进度看板 · 集-段级 · EP1-42</title>
+<style>
+  :root{
+    --bg:#F5F6F8; --card:#FFFFFF; --line:#E2E5EA; --line2:#EEF0F3;
+    --tx:#1F2937; --tx2:#5B6472; --tx3:#8A93A0;
+    --pri:#2E5C8A; --pri-soft:#EAF1F8;
+    --done:#4E9A6A; --doing:#D98324;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;font-size:13px}
+  .wrap{max-width:1560px;margin:0 auto;padding:18px 18px 60px}
+
+  header{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  h1{margin:0;font-size:19px;font-weight:650;letter-spacing:.3px}
+  .sub{color:var(--tx3);font-size:12px;margin-top:4px}
+  .spacer{flex:1}
+  .btns{display:flex;gap:7px;flex-wrap:wrap}
+  button{font:inherit;font-size:12px;padding:6px 11px;border:1px solid var(--line);
+    background:#fff;color:var(--tx2);border-radius:6px;cursor:pointer}
+  button:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)}
+  button.primary{background:var(--pri);color:#fff;border-color:var(--pri)}
+  button.primary:hover{background:#254a70;color:#fff}
+  button.danger:hover{border-color:#C0392B;color:#C0392B;background:#FDECEA}
+  button.mini{padding:3px 8px;font-size:11px;border-radius:5px}
+
+  .syncbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-4px 0 14px;
+    background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px 14px;font-size:12px;color:var(--tx2)}
+  .syncbar .dot{width:9px;height:9px;border-radius:50%;background:#B9C0C9;flex:none;box-shadow:0 0 0 3px rgba(0,0,0,.04)}
+  .syncbar .dot.ok{background:#4E9A6A}
+  .syncbar .dot.push{background:#D98324}
+  .syncbar .dot.err{background:#C0392B}
+  .syncbar .spacer2{flex:1}
+  .syncbar .who{display:flex;align-items:center;gap:6px}
+  .syncbar .who select{font:inherit;font-size:12px;padding:3px 6px;border:1px solid var(--line);
+    border-radius:5px;background:#fff;color:var(--tx);max-width:130px}
+  .syncbar .last{color:var(--tx3);font-size:11px}
+  .syncbar .auto{display:flex;align-items:center;gap:4px;color:var(--tx3);font-size:11px;cursor:pointer}
+  .syncbar .auto input{margin:0}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  .card h2{margin:0 0 12px;font-size:13px;font-weight:650;color:var(--tx2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h2 .hint{font-weight:400;color:var(--tx3);font-size:11px}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .stat .k{font-size:11px;color:var(--tx3);margin-bottom:6px}
+  .stat .v{font-size:24px;font-weight:680;line-height:1}
+  .stat .v small{font-size:12px;font-weight:500;color:var(--tx3);margin-left:2px}
+  .stat .bar{height:6px;background:var(--line2);border-radius:4px;margin-top:9px;overflow:hidden}
+  .stat .bar i{display:block;height:100%;background:var(--pri);border-radius:4px}
+
+  .bigwrap{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .bigbar{flex:1;height:22px;background:var(--line2);border-radius:11px;overflow:hidden;position:relative}
+  .bigbar i{display:block;height:100%;background:linear-gradient(90deg,#4E9A6A,#6FB98A);border-radius:11px;transition:width .3s}
+  .bigbar span{position:absolute;left:12px;top:0;line-height:22px;color:#fff;font-size:11px;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+  .bignum{font-size:26px;font-weight:700;min-width:96px;text-align:right}
+
+  .acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+  .act{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#FCFCFD}
+  .act .t{font-size:12px;font-weight:600;margin-bottom:3px}
+  .act .r{font-size:11px;color:var(--tx3);margin-bottom:7px}
+  .act .bar{height:8px;background:var(--line2);border-radius:4px;overflow:hidden}
+  .act .bar i{display:block;height:100%;background:var(--pri)}
+  .act .p{font-size:11px;color:var(--tx2);margin-top:5px}
+
+  .grid42{display:grid;grid-template-columns:repeat(14,1fr);gap:6px}
+  .ep{border:1px solid var(--line);border-radius:7px;padding:7px 4px;text-align:center;cursor:pointer;
+    background:#EEF0F3;transition:transform .1s}
+  .ep:hover{transform:translateY(-2px);box-shadow:0 3px 8px rgba(0,0,0,.09)}
+  .ep .n{font-size:12px;font-weight:650}
+  .ep .p{font-size:10px;margin-top:2px;opacity:.85}
+
+  .people{display:grid;grid-template-columns:repeat(auto-fit,minmax(256px,1fr));gap:10px}
+  .pcard{border:1px solid var(--line);border-radius:9px;padding:11px 13px;background:#FCFCFD}
+  .pcard .top{display:flex;align-items:baseline;gap:8px}
+  .pcard .nm{font-size:14px;font-weight:680}
+  .pcard .role{font-size:11px;color:var(--tx3);margin-left:auto}
+  .pcard .num{display:flex;gap:12px;margin:9px 0 7px;font-size:11px;color:var(--tx2)}
+  .pcard .num b{font-size:15px;font-weight:680;color:var(--tx);display:block;line-height:1.1}
+  .pcard .bar{height:7px;background:var(--line2);border-radius:4px;overflow:hidden}
+  .pcard .bar i{display:block;height:100%;background:var(--pri)}
+  .pcard .foot{font-size:11px;color:var(--tx3);margin-top:5px;line-height:1.6}
+
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  th,td{border:1px solid var(--line2);padding:5px 7px;text-align:center;white-space:nowrap}
+  th{background:#F3F5F8;color:var(--tx2);font-weight:600;position:sticky;top:0;z-index:2}
+  td.l{text-align:left}
+  .scroll{max-height:640px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+  .scroll table{border:0}
+
+  /* ---- 段落总表：固定列宽 + 场景列自适应，表头与单元格严格一一对齐 ---- */
+  #segTable{table-layout:fixed;width:100%;min-width:1020px}
+  /* 防撞车护栏：任何同名类都不许再把这几个盒子改成 flex/block */
+  #segTable{display:table}
+  #segTable thead{display:table-header-group}
+  #segTable tbody{display:table-row-group}
+  #segTable tr{display:table-row}
+  #segTable td,#segTable th{display:table-cell}
+  #segTable th{position:sticky;top:0;z-index:3;white-space:nowrap;padding:8px 8px;
+    background:#F3F5F8;border-bottom:1px solid var(--line);
+    box-shadow:inset 0 -1px 0 #DDE3EB,inset 0 1px 0 #E9EDF3}
+  #segTable td{padding:6px 8px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis}
+  #segTable td.scene{white-space:normal;text-align:left;line-height:1.45;padding:6px 10px}
+  #segTable td.scene .st{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;word-break:break-word}
+  #segTable td.op{white-space:nowrap;padding:4px 4px}
+  #segTable td.op .mini{padding:2px 6px;font-size:11px}
+  #segTable td.op .mini+.mini{margin-left:5px}
+  #segTable input.cell,#segTable select.cell{height:24px}
+  tr.ephead td{padding:0 6px;background:#EDF2F8;border-color:#E1EAF5;vertical-align:middle}
+  tr.ephead td.lead{padding:0}
+  tr.ephead td.epnum{font-weight:650;font-size:12px;color:#26456B}
+  tr.ephead td.epop{padding:2px 4px;white-space:nowrap}
+  tr.ephead td.epop .mini{padding:2px 7px;font-size:11px}
+  .epbar{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;
+    font-weight:650;color:#26456B;text-align:left;min-width:0}
+  .epbar .epprog{font-weight:500;color:#4B6B8F;font-size:11px;background:#DCE7F4;
+    padding:2px 8px;border-radius:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  input.cell{width:100%;border:0;background:transparent;font:inherit;color:inherit;text-align:center;padding:2px 0;outline:none}
+  input.cell:focus{background:#fff;box-shadow:inset 0 0 0 2px var(--pri)}
+  select.cell{width:100%;border:0;background:transparent;font:inherit;color:inherit;text-align:center;padding:2px 0;outline:none;cursor:pointer}
+  select.cell:focus{background:#fff;box-shadow:inset 0 0 0 2px var(--pri)}
+  .tag{display:inline-block;padding:1px 6px;border-radius:9px;font-size:10px;background:var(--line2);color:var(--tx2)}
+  .t-doing{background:#FBE3C4;color:#8A5A12}
+  .t-done{background:#C9E7D3;color:#2C6B45}
+  .t-todo{background:#EEF0F3;color:#6B7280}
+
+  tr.ephead td{background:#EDF2F8;font-weight:650;color:#26456B;text-align:left}
+  tr.ephead .epprog{font-weight:500;color:#4B6B8F;font-size:11px}
+  tr.ephead .mini{cursor:pointer}
+  tr.segrow td{background:#fff}
+  tr.segrow:hover td{background:#FAFBFD}
+  .foldbtn{cursor:pointer;color:var(--pri);font-size:11px;user-select:none}
+
+  .mxwrap{overflow:auto;border:1px solid var(--line);border-radius:8px;max-height:580px}
+  .mxwrap table{border:0}
+  .mxwrap th{border:1px solid var(--line)}
+  .mxwrap td{border:1px solid var(--line)}
+  td.date{background:#F3F5F8;font-weight:600;color:var(--tx2)}
+  td.today{background:#FFF6E5}
+  td.slot{padding:0;width:126px;min-width:126px;cursor:pointer;vertical-align:middle}
+  td.slot .in{padding:5px 6px;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+  td.slot .e{font-size:11.5px;font-weight:650;line-height:1.3}
+  td.slot .q{font-size:10px;opacity:.85;line-height:1.2}
+  td.slot:hover .in{background:rgba(46,92,138,.06)}
+  th.mem{min-width:126px}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--tx3);margin-top:9px;align-items:center}
+  .lg{display:flex;align-items:center;gap:5px}
+  .sw{width:22px;height:11px;border-radius:3px;border:1px solid rgba(0,0,0,.06)}
+  .note{font-size:11px;color:var(--tx3);line-height:1.8}
+  .hide{display:none}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .filters select,.filters input{font:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--tx)}
+  .daybox{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+  .dperson{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#FCFCFD}
+  .dperson .nm{font-size:13px;font-weight:680;margin-bottom:7px;display:flex;justify-content:space-between}
+  .dperson .nm span{font-weight:500;font-size:11px;color:var(--tx3)}
+  .segline{font-size:11.5px;color:var(--tx2);padding:5px 0;border-top:1px dashed var(--line);line-height:1.55}
+  .segline:first-of-type{border-top:0}
+  .segline .epn{color:var(--pri);font-weight:650}
+  .segline b{color:var(--tx)}
+  .empty{font-size:11px;color:var(--tx3)}
+
+  /* 弹层 */
+  .mask{position:fixed;inset:0;background:rgba(15,23,42,.34);display:flex;align-items:center;justify-content:center;z-index:60}
+  .pop{background:#fff;border-radius:12px;width:560px;max-width:94vw;max-height:84vh;display:flex;flex-direction:column;
+    overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.28)}
+  .poph{padding:12px 16px;border-bottom:1px solid var(--line);font-weight:650;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .poph .x{cursor:pointer;color:var(--tx3);font-size:16px;line-height:1}
+  .popsearch{padding:10px 14px;border-bottom:1px solid var(--line2);display:flex;gap:8px}
+  .popsearch input{flex:1;font:inherit;font-size:12px;padding:6px 9px;border:1px solid var(--line);border-radius:6px}
+  .popbody{overflow:auto;padding:6px 10px 10px}
+  .epg{font-size:11px;color:#26456B;background:#EDF2F8;padding:6px 8px;border-radius:6px;font-weight:650;
+    display:flex;gap:10px;align-items:center;margin:8px 0 3px;position:sticky;top:0;z-index:1}
+  .epg .grow{margin-left:auto;display:flex;gap:6px;align-items:center}
+  .epg button{padding:2px 7px;font-size:10.5px;border-radius:5px}
+  /* 弹层内"段落行"（label），类名独立于表格的 .segrow，避免撞车 */
+  .pkrow{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px}
+  .pkrow:hover{background:var(--pri-soft)}
+  .pkrow .sid{font-weight:650;min-width:48px}
+  .pkrow .nm{color:var(--tx2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pkrow .pct{font-size:11px;color:var(--tx3);min-width:66px;text-align:right}
+  .popf{padding:10px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .form{display:flex;flex-direction:column;gap:10px;padding:14px 16px}
+  .form label{font-size:12px;color:var(--tx2);display:flex;flex-direction:column;gap:5px}
+  .form input,.form select,.form textarea{font:inherit;font-size:12px;padding:7px 9px;border:1px solid var(--line);border-radius:6px}
+</style>
+</head>
+<body data-page-node-id="BcoJkNn7NUvC2faPtnbD0d">
+<div class="wrap" data-page-node-id="h77K68sZAcblsG095XPzVC">
+
+  <header data-page-node-id="1v3kAhiQWEniHvYu9EA9TI">
+    <div data-page-node-id="ti4OHQxYyX525uYLHDEmmD">
+      <h1 data-page-node-id="AwH9WM9mz5SA3NnxH2LrWC">剧组制作进度看板 · 集-段级 · EP1–42</h1>
+      <div class="sub" data-page-node-id="6eLChylYHFGD6dIkiEKePW">10 人排期 · 每集 1-1 / 1-2 / 1-3 分段，可随时增删 · 进度与段落总表实时关联</div>
+    </div>
+    <div class="spacer" data-page-node-id="nWcrYR5EUFPfsnuarN6trB"></div>
+    <div class="btns" data-page-node-id="FWgmcONGUT7JDsI1gEVkU2">
+      <button class="primary" id="btnAddSeg" data-page-node-id="IZ3QJ2RNdsVQlfLA5DBUgb">＋ 新增段落</button>
+      <button id="btnAddEp" data-page-node-id="fq4R5GoLRSOA1HOsSABzE9">＋ 新增一集</button>
+      <button id="btnAdd7" data-page-node-id="CLLKw2wEnizXAoqd6Y9dbC">+7 天</button>
+      <button id="btnToday" data-page-node-id="DfZqtM0idonlvlXf8AWwV3">回到今天</button>
+      <button id="btnExportCsv" data-page-node-id="Hg4EGsQBxiNv6EYba9Ow5v">导出 CSV</button>
+      <button id="btnExportJson" data-page-node-id="5L20SUXHFhXDOgV9SUqTm0">备份 JSON</button>
+      <button id="btnImport" data-page-node-id="pqlBjxaPc3CO9SiOedtV4V">导入 JSON</button>
+      <button class="danger" id="btnReset" data-page-node-id="n4vZfj25H9R1Q3nT38NCiw">清空重填</button>
+      <input type="file" id="fileJson" accept=".json" class="hide" data-page-node-id="LNMn6HVH4AD03piPuu9CDz">
+    </div>
+  </header>
+
+  <div class="syncbar">
+    <span class="dot" id="syncDot"></span>
+    <span id="syncTxt">正在连接云端…</span>
+    <span class="who">我是
+      <select id="mePick"><option value="">（未署名）</option></select>
+    </span>
+    <span class="spacer2"></span>
+    <span class="last" id="syncLast"></span>
+    <button class="mini" id="btnPull">立即同步</button>
+    <label class="auto"><input type="checkbox" id="autoSync" checked> 自动同步</label>
+  </div>
+
+  <div class="stats" id="stats" data-page-node-id="6CtSRUi0qDBNeXXJjszDGe"></div>
+
+  <div class="card" data-page-node-id="FcZDfdN3BwpBfu5KD1HeUc">
+    <h2 data-page-node-id="65H3pKjPrxG76GPqRNSGMC">42 集整体进度 <span class="hint" data-page-node-id="CiqmvITRWUaUx3vGzEbsRU">按全部段落完成百分比平均</span></h2>
+    <div class="bigwrap" data-page-node-id="Co0nxc5VQtVSIwmTPRDGBW">
+      <div class="bigbar" data-page-node-id="UXoEpFEv8J4M8QmFTA6GDm"><i id="bigBar" style="width:0%" data-page-node-id="JLps4puYWCM1vI0fOO66tv"></i><span id="bigTxt" data-page-node-id="dnsb0nEWHCVdiyBsiSGKVc"></span></div>
+      <div class="bignum" id="bigNum" data-page-node-id="hBwBEqovTR3ZQiSQpxMAvL">0%</div>
+    </div>
+    <div class="acts" id="acts" data-page-node-id="9dBkyQUgrmffsq2CWc9XoV"></div>
+  </div>
+
+  <div class="card" data-page-node-id="hL2Q465Rc25hPKs235Puas">
+    <h2 data-page-node-id="1FRlA4dJTBcI3t3zU553Xp">42 集进度热力图 <span class="hint" data-page-node-id="j4nPt84yiPgGeBXF8GvXll">每格＝该集所有段平均；点击把整集所有段统一设为同一百分比</span></h2>
+    <div class="grid42" id="grid42" data-page-node-id="FKDD2kXHeIoI4oJAG6GHFf"></div>
+    <div class="legend" data-page-node-id="gG7zsKsnA3n5YUWGp3nLAC">
+      <div class="lg" data-page-node-id="X68mpiJP3OrNB5MBDYouqd"><span class="sw" style="background:#EEF0F3" data-page-node-id="2IIzcJ5m95zMonU4XrZuN4"></span>未开始 0%</div>
+      <div class="lg" data-page-node-id="FB8OBNmOZocYyD8tvTwFaX"><span class="sw" style="background:#FBE3C4" data-page-node-id="nn3ruU89EuKcD4HARnCaBU"></span>1–39%</div>
+      <div class="lg" data-page-node-id="eeIE0lTYniBFO5IDjNbZZv"><span class="sw" style="background:#F6C98E" data-page-node-id="Wf1xZ6t1A4GQ5BH4ZxaFWw"></span>40–79%</div>
+      <div class="lg" data-page-node-id="rqmFszBM8YpEiDxz9NHaFy"><span class="sw" style="background:#A8D5B5" data-page-node-id="oRi9q4TPeKsQxau2Mkns3S"></span>80–99%</div>
+      <div class="lg" data-page-node-id="0wn20yVuwmZreFReI1Djan"><span class="sw" style="background:#4E9A6A" data-page-node-id="f8DqKmpvqhHReODhdrsmOE"></span>已完成 100%</div>
+    </div>
+  </div>
+
+  <div class="card" data-page-node-id="axp12mNrphn6iV6bGMHpBO">
+    <h2 data-page-node-id="7DQDkyLQTM4EJFtMhGW3IZ">人员工量总览 <span class="hint" data-page-node-id="3JQgD8Fen8I6nvkudpdw9m">按「段落总表」指派的制作/剪辑人员统计</span></h2>
+    <div class="people" id="people" data-page-node-id="Pej4DZpRdbzUCIUavQVHD0"></div>
+  </div>
+
+  <div class="card" data-page-node-id="F44s4T5pcZhgMhzdnnaWTS">
+    <h2 data-page-node-id="WYNZETmAn0G9yGdsGjlfN7">每日每人工作任务 <span class="hint" data-page-node-id="H78LummVDNkfbIFCzEShzU">点格子选任务（可多选、可整集全选）；格内显示「哪一集 · 哪一段 + 完成百分比」，数据全部来自段落总表</span></h2>
+    <div class="mxwrap" data-page-node-id="2evFDXcJa08ycgh7jCGUjI"><table id="mx" data-page-node-id="g4OxtlIyFNtFZniqFc4vV4"></table></div>
+    <div class="legend" data-page-node-id="cxpwJ3rbEuD0ccfJcMFmqM">
+      <div class="lg" data-page-node-id="h6VF7tJ2jGyq5Ev8GEHt0N">今日行底色为浅黄</div>
+      <div class="lg" data-page-node-id="lLWfBDuu5TFqmQ8wzG9NFM">格子底色＝当天任务的加权平均完成度</div>
+      <div class="lg" data-page-node-id="GH7PV15ncFpIdIRGiw8Vc2">同一段多人合做时，各人格子都选该段</div>
+    </div>
+  </div>
+
+  <div class="card" data-page-node-id="zJZefoRKEjnOxPkxvJpdhX">
+    <h2 data-page-node-id="zpG51dgJnvgEiBTAjI67YI">当日明细 <span class="hint" data-page-node-id="8khJDLLtWGLyFl888hEWRH">选一天，看 10 个人各自在做哪一集哪一段、各自完成多少</span></h2>
+    <div class="filters" data-page-node-id="khqZecz8XEQxERkIDeRGRh"><label data-page-node-id="FO056mvgWnP4Xk2NEFaNHa">日期</label><select id="dayPick" data-page-node-id="mBDN2hiesarqajDFb3DPmW"></select>
+      <span class="tag" id="daySum" data-page-node-id="XoKrsnU2KmiceJxxuNa8jQ"></span></div>
+    <div class="daybox" id="dayBox" data-page-node-id="Lze0T9IPtvB1f8CHhn3Hil"></div>
+  </div>
+
+  <div class="card" data-page-node-id="sJ7qx692yYWWtEv4LEY3VR">
+    <h2 data-page-node-id="mB7cfQVBPj5lVCvHR6o8qS">段落总表 <span class="hint" data-page-node-id="JZBxY4WQrU72D75ekgnLBH">按集分组；每集右侧可「＋ 新增本集段落」，每段可单独指派制作/剪辑人员</span></h2>
+    <div class="filters" data-page-node-id="gDDgZ1w9Z63C5VZF7uFTVF">
+      <label data-page-node-id="z1g2HSL5NUrC6pQfYplpls">集数</label><select id="fEp" data-page-node-id="QjqDqvo3tSrl6lU1lxGmlR"></select>
+      <label data-page-node-id="Hg8rDRniqeevmnuLXWa4RQ">人员</label><select id="fPpl" data-page-node-id="bzP8d1CzcFNtW7TzVynrjI"></select>
+      <label data-page-node-id="YDFsQLwJzRVNqz27oszVkZ">状态</label><select id="fSt" data-page-node-id="A4o8lM5UnKqDxuSfAQRKLF"></select>
+      <input id="fKey" placeholder="搜索段号或场景关键词" style="min-width:200px" data-page-node-id="bugZnHOHQAo4VATxzl9Si3">
+      <span class="tag" id="fCount" data-page-node-id="nvJyqT6N6NKI9NwbE7rYke"></span>
+    </div>
+    <div class="scroll" data-page-node-id="MWITb0AX3YInrqjB9QqApf"><table id="segTable" data-page-node-id="T7iUTUp1GFictkiBx3DOuG"></table></div>
+  </div>
+
+  <div class="card" data-page-node-id="giyiPf0A76shDO6ezo64fb">
+    <h2 data-page-node-id="jQqVOPFn5pB0nI9MbTHaHn">使用说明</h2>
+    <div class="note" data-page-node-id="2BHJW0zdFdHmt2Bu9BNjk3">
+      1. 人员：周思军、王语默、刘浩东、梁洁、陈文凯、黄胜超、张露蓉、代漆敏、伍晓杰、张静。<br data-page-node-id="09yKxgZyG4BdxRG3QVeSR5">
+      2. 段号规则：第 N 集第 M 段＝N-M。EP1–8 剧本未接收，已按每集 3 段预留；用「＋ 新增段落」可给任意一集继续加段（自动取下一个段号，如 12-3、12-4）。<br data-page-node-id="oY9cYBfYmebLgxvYouoH4Z">
+      3. 「每日每人工作任务」格子点开即可勾选该人当天要做的段，可跨集多选，也可按整集全选。格内显示「EP9 · 9-1」与完成百分比，数值直接取自段落总表 —— 在段落总表改完成度，这里立即同步。<br data-page-node-id="rIDqXSOvmRg25SxHiQuHpl">
+      4. 每段可分别指派制作人员与剪辑人员（同一段可多人合做）；难度 ★1–5 为导演初判，可直接改。<br data-page-node-id="RFQtZg6pbLdad7j6oLhOu4">
+      5. 删除段落会同时清掉排期里对该段的引用，操作前会二次确认。<br data-page-node-id="P80yN3zQ9Av9CaB84mi9CC">
+      6. <b>团队同步</b>：数据保存在云端，10 人打开同一网址就是同一份数据。<b>务必用在线网址打开</b>（不要打开本地的 .html 文件、也不要用应用内预览面板，那样浏览器会拦掉云端请求，报「Failed to fetch」）。改动 1 秒后自动上传，每 15 秒自动拉取别人的更新（右上角「我是」选自己的名字，改动会署名）。正在输入时不会打断你；若两边同时改，点「立即同步」以云端为准。断网时会提示并只存本机，恢复后自动补传，也可点「重试连接」手动重连。<br data-page-node-id="note6">
+      7. 换机器或离线备份：用「备份 JSON」→「导入 JSON」。
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script>/* CDN 兜底：jsDelivr 挂了就换 unpkg，避免 SDK 加载不到 */
+if(typeof WorkBuddyCloud==='undefined'){document.write('<script src="https://unpkg.com/@tencent-ai/workbuddy-cloud-sdk@0.1.3/lib/index.global.js"><\/script>');}</script>
+<script>
+/* ================= 云端同步配置 ================= */
+const CLOUD_CFG = {
+  endpoint: 'https://shoot-progress-board.app.workbuddy.host',
+  publishableKey: 'wbpk_UHqqw0QPGdo270wDLbSxHD_9jDpkKYzpW47Op60mMEi7KAkVATaCzTO'
+};
+/* 在线网址（10 人都用这个，别用本地文件/应用内预览打开） */
+const BOARD_URL = 'https://shoot-progress-board.app.workbuddy.host/';
+/* SDK 多源：首次加载失败时按顺序再试 */
+const SDK_URLS = [
+  'https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js',
+  'https://unpkg.com/@tencent-ai/workbuddy-cloud-sdk@0.1.3/lib/index.global.js'
+];
+const ROW_ID = 'main';
+let cloud = null, cloudOK = false;
+let cloudRetryN = 0, cloudRetryTimer = null;
+
+/* ================= 初始段落种子（ep9–42 依剧本提取；ep1–8 预留） ================= */
+const SEED_SEGS = [
+  ['1-1','（待补剧本）',3],['1-2','（待补剧本）',3],['1-3','（待补剧本）',3],
+  ['2-1','（待补剧本）',3],['2-2','（待补剧本）',3],['2-3','（待补剧本）',3],
+  ['3-1','（待补剧本）',3],['3-2','（待补剧本）',3],['3-3','（待补剧本）',3],
+  ['4-1','（待补剧本）',3],['4-2','（待补剧本）',3],['4-3','（待补剧本）',3],
+  ['5-1','（待补剧本）',3],['5-2','（待补剧本）',3],['5-3','（待补剧本）',3],
+  ['6-1','（待补剧本）',3],['6-2','（待补剧本）',3],['6-3','（待补剧本）',3],
+  ['7-1','（待补剧本）',3],['7-2','（待补剧本）',3],['7-3','（待补剧本）',3],
+  ['8-1','（待补剧本）',3],['8-2','（待补剧本）',3],['8-3','（待补剧本）',3],
+  ['9-1','夜内 曼哈顿圣心综合医院·心胸外科特护病房（ICU）',3],
+  ['9-2','夜内 芝加哥医疗中心·急救大厅外',3],
+  ['10-1','晨外/内 私人疗养庄园 / 特护病房',3],
+  ['10-2','日外/日内 雨中公墓 / 联邦破产法院 / 滨海工地（双线快剪）',5],
+  ['10-3','夜内 斯特林大厦',3],
+  ['10-4','日外/日内 医疗中心·门前台阶 / 急诊会诊室',4],
+  ['11-1','日内 医疗中心·病房（含 1 秒闪回）',3],
+  ['11-2','日内 曼哈顿圣心综合医院·心胸外科VIP特护病区',3],
+  ['11-3','日内 曼哈顿圣心综合医院·急诊外科副主任办公室',2],
+  ['11-4','傍晚外 圣心综合医院·正门十字路口',5],
+  ['12-1','日内 斯特林大厦·顶层第一董事会议室',3],
+  ['12-2','傍晚内 斯特林大厦·副总裁办公室',3],
+  ['13-1','日内 长岛近郊独栋庭院·客厅',2],
+  ['13-2','日内 斯特林大厦·执行副总裁办公室',2],
+  ['13-3','傍晚外 曼哈顿第七大道·戴维斯诊所门前',4],
+  ['14-1','日内 戴维斯创伤心理诊所·首席问诊室 / 儿童区',2],
+  ['15-1','夜外/内 街角暗处·轿车内',3],
+  ['15-2','夜内 斯特林大厦·执行副总裁办公室',2],
+  ['16-1','夜外/内 戴维斯诊所门外 / 大堂（断电）',5],
+  ['16-2','夜外/内 戴维斯诊所大门 / 前台（撞卡车）',5],
+  ['17-1','夜内 曼哈顿第七大道·戴维斯诊所大堂',4],
+  ['18-1','夜内 戴维斯诊所大堂·楼梯拐角',3],
+  ['18-2','晨内 戴维斯创伤心理诊所·首席问诊室',2],
+  ['18-3','日内 诊所·首席问诊室',3],
+  ['19-1','日内 戴维斯创伤心理诊所·首席问诊室',2],
+  ['19-2','日外/内 街角暗处·轿车内',2],
+  ['19-3','日内 戴维斯诊所·前台大厅',3],
+  ['20-1','日内 戴维斯创伤心理诊所·前台大厅',3],
+  ['21-1','日内 曼哈顿第七大道·戴维斯诊所前台',3],
+  ['22-1','日外 曼哈顿第七大道·斜对面暗巷',4],
+  ['22-2','日内 戴维斯诊所·前台大厅',2],
+  ['22-3','日内 戴维斯诊所·问诊室门前',3],
+  ['23-1','傍晚内 曼哈顿第七大道·戴维斯诊所前台',3],
+  ['23-2','傍晚内 诊所·儿童安全留观室',2],
+  ['23-3','夜外/夜内 斯特林庄园·正门主厅',4],
+  ['24-1','夜内 斯特林庄园·主客厅',3],
+  ['24-2','夜内 庄园·长廊盥洗室',4],
+  ['25-1','夜内 斯特林庄园·主客厅',4],
+  ['25-2','夜外/夜内 曼哈顿暴雨·SUV内',4],
+  ['25-3','夜内 戴维斯诊所·防爆门前 / 前台大厅',4],
+  ['26-1','夜内 戴维斯诊所·防爆门前 / 前台',3],
+  ['26-2','夜内 戴维斯诊所·前台 / 斯特林庄园（视讯端）',3],
+  ['27-1','夜内 戴维斯诊所·前台大厅',3],
+  ['28-1','夜外/夜内 戴维斯诊所·正门',4],
+  ['28-2','夜内 斯特林顶层复式公寓·玄关',4],
+  ['29-1','晨内 斯特林顶层复式公寓·次卧阳台',4],
+  ['30-1','晨内 斯特林顶层复式公寓·主卧落地窗前',3],
+  ['30-2','日内 顶层公寓·下沉式客厅 / VIP电梯（蒙太奇）',4],
+  ['30-3','日内 斯特林顶层复式公寓·客厅',4],
+  ['31-1','夜内 斯特林顶层复式公寓·客厅 / 走廊',3],
+  ['31-2','夜内 走廊门后 / 客厅（隔门偷听）',3],
+  ['31-3','夜内 主卧 / 电梯厅（逃离）',4],
+  ['32-1','夜外/内 曼哈顿FDR车道 / 黑色超跑',5],
+  ['32-2','夜外 长岛海斯庄园·正门铸铁大门前',4],
+  ['33-1','夜外 长岛海斯庄园·正门前（病历真相 + 跪地）',5],
+  ['34-1','晨外 长岛海斯庄园·正门铸铁大门前（失温）',4],
+  ['34-2','晨内 长岛海斯庄园·二楼客房 / 安保对讲机',2],
+  ['34-3','晨外/内 一楼门廊 / 二楼暗处窗边',4],
+  ['35-1','晨内 长岛海斯庄园·一楼玄关',3],
+  ['35-2','日内 长岛海斯庄园·一楼客房（输液 / 同床）',3],
+  ['36-1','晨内 长岛海斯庄园·客房',2],
+  ['36-2','晨内 海斯庄园客房 / 曼哈顿法院外 / 诊所药房（三线蒙太奇）',4],
+  ['37-1','晨内 长岛海斯庄园·一楼客房',2],
+  ['37-2','日内 戴维斯诊所药房 / 曼哈顿家事法庭（双线）',4],
+  ['38-1','日内 曼哈顿家事法庭·法庭内',3],
+  ['39-1','日外 曼哈顿联邦法院正门·街角 / 车队内',3],
+  ['39-2','日内 斯特林庄园·主客厅（账单）',3],
+  ['40-1','日内 斯特林庄园·主客厅（摊牌 / 世纪婚礼宣告）',4],
+  ['41-1','日外/日内 长岛海滨庄园草坪 / 婚礼（含新闻VO）',5],
+  ['41-2','傍晚内 庄园晚宴大厅·侧门阳台',2],
+  ['42-1','夜内 斯特林顶层复式公寓·客厅（拆怀表）',4],
+  ['42-2','夜内 波士顿海斯庄园·地下密室',4]
+];
+
+const ACTS = [
+ {name:'第一幕 EP1–8',  from:1,  to:8,  desc:'前史（剧本未接收，段位已预留）'},
+ {name:'第二幕 EP9–17', from:9,  to:17, desc:'认亲 · 五年跳跃 · 暴雨夜'},
+ {name:'第三幕 EP18–27',from:18, to:27, desc:'追妻 · 亲权战'},
+ {name:'第四幕 EP28–35',from:28, to:35, desc:'囚笼 · 真相 · 长岛'},
+ {name:'第五幕 EP36–42',from:36, to:42, desc:'法庭反杀 · 婚礼 · Finale'}
+];
+
+const DEFAULT_MEMBERS = ['周思军','王语默','刘浩东','梁洁','陈文凯','黄胜超','张露蓉','代漆敏','伍晓杰','张静'];
+const WEEK = ['日','一','二','三','四','五','六'];
+const KEY = 'wb_seg_progress_v3';
+
+/* ================= 工具 ================= */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function todayStr(){return ymd(new Date());}
+function addDays(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return ymd(d);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function epOf(sid){const n=parseInt(String(sid).split('-')[0],10);return isNaN(n)?0:n;}
+function segNo(sid){const p=String(sid).split('-');return p.length>1?parseInt(p[1],10):0;}
+
+/* ================= 状态 ================= */
+function seedSegs(){
+  const arr=[],map={};
+  SEED_SEGS.forEach(d=>{
+    arr.push({id:d[0],name:d[1],diff:d[2]});
+    map[d[0]]={pct:0,maker:'',editor:'',words:''};
+  });
+  return {segs:arr,segData:map};
+}
+function defaultState(){
+  const s=seedSegs();
+  return {members:DEFAULT_MEMBERS.slice(), startDate:todayStr(), days:30,
+          segs:s.segs, segData:s.segData, sched:{}};
+}
+let S;
+/* 把任意来源的对象规整成合法状态（本地缓存 / 云端下发 / 导入 JSON 共用） */
+function normalize(o){
+  const st={members:DEFAULT_MEMBERS.slice(), startDate:todayStr(), days:30, segs:[], segData:{}, sched:{}};
+  if(Array.isArray(o.members)&&o.members.length===10){
+    // 旧版本存的是岗位名，自动换成 10 位真实人员
+    const legacy=o.members.some(x=>/出图|提示词|分镜|合成|统筹|音效|配音/.test(x));
+    if(!legacy)st.members=o.members;
+  }
+  if(o.startDate)st.startDate=o.startDate;
+  if(o.days)st.days=o.days;
+  st.segs=(Array.isArray(o.segs)&&o.segs.length)
+    ? o.segs.map(x=>({id:x.id,name:x.name||'',diff:x.diff||3}))
+    : seedSegs().segs;
+  const sd=o.segData||o.seg||{};
+  const tmp={};
+  st.segs.forEach(sg=>{
+    // segById 依赖 S.segs，这里先用局部表判断
+    const v=sd[sg.id]||{};
+    tmp[sg.id]={pct:Number(v.pct)||0,maker:v.maker||'',editor:v.editor||'',words:v.words||''};
+  });
+  st.segData=tmp;
+  const ids=new Set(st.segs.map(s=>s.id));
+  const sc=o.sched||{};
+  Object.keys(sc).forEach(d=>{
+    st.sched[d]={};
+    Object.keys(sc[d]).forEach(k=>{
+      const v=sc[d][k];
+      const arr=Array.isArray(v)?v:tokens(v);
+      const kept=arr.filter(t=>ids.has(t));
+      if(kept.length)st.sched[d][k]=kept;
+    });
+  });
+  return st;
+}
+function load(){
+  let raw=null;
+  try{raw=localStorage.getItem(KEY)||localStorage.getItem('wb_seg_progress_v1');}catch(e){}
+  if(raw){
+    try{ S=normalize(JSON.parse(raw)); return; }catch(e){}
+  }
+  S=defaultState();
+}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+  schedulePush();
+}
+
+function segById(id){return S.segs.find(s=>s.id===id);}
+function segPct(id){return (S.segData[id]&&S.segData[id].pct)||0;}
+function segsOfEp(ep){return S.segs.filter(s=>epOf(s.id)===ep).sort((a,b)=>segNo(a.id)-segNo(b.id));}
+function allEps(){const set=new Set(S.segs.map(s=>epOf(s.id)));let mx=42;set.forEach(e=>{if(e>mx)mx=e;});for(let i=1;i<=mx;i++)set.add(i);return Array.from(set).sort((a,b)=>a-b);}
+function epAvg(ep){const a=segsOfEp(ep);if(!a.length)return 0;let s=0;a.forEach(x=>s+=segPct(x.id));return s/a.length;}
+function heat(p){
+  if(p>=100)return{bg:'#4E9A6A',fg:'#fff'};
+  if(p>=80) return{bg:'#A8D5B5',fg:'#1F2937'};
+  if(p>=40) return{bg:'#F6C98E',fg:'#1F2937'};
+  if(p>=1)  return{bg:'#FBE3C4',fg:'#1F2937'};
+  return{bg:'#EEF0F3',fg:'#5B6472'};
+}
+function statusOf(p){return p>=100?'已完成':(p>=1?'进行中':'未开始');}
+function stTag(p){const c=p>=100?'t-done':(p>=1?'t-doing':'t-todo');return `<span class="tag ${c}">${statusOf(p)}</span>`;}
+function dates(){const a=[];for(let i=0;i<S.days;i++)a.push(addDays(S.startDate,i));return a;}
+
+/* 文本容错：9-1 / 9_1 / 9.1 → 9-1；纯数字→视为整集 */
+function normTok(t){
+  t=String(t).replace(/[－—–_。．.／/]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  const m=t.match(/^(\d{1,2})-(\d{1,3})$/);
+  if(m)return parseInt(m[1],10)+'-'+parseInt(m[2],10);
+  const n=t.match(/^(\d{1,2})$/);
+  if(n)return String(parseInt(n[1],10));
+  return t;
+}
+function tokens(v){
+  if(!v)return[];
+  if(Array.isArray(v))return v.slice();
+  return String(v).replace(/[，、;；]+/g,' ').split(/\s+/).map(t=>t.trim()).filter(Boolean).map(normTok);
+}
+/* 排期项 → {id, label, ep, pct}；整集写法自动展开为该集所有段 */
+function expand(t){
+  if(t.includes('-')){
+    const sg=segById(t);
+    return sg?[{id:sg.id,label:sg.id,ep:epOf(sg.id),pct:segPct(sg.id)}]:[];
+  }
+  const ep=parseInt(t,10); if(isNaN(ep))return[];
+  return segsOfEp(ep).map(sg=>({id:sg.id,label:sg.id,ep:ep,pct:segPct(sg.id)}));
+}
+function dayTasks(date,mi){
+  const v=S.sched[date]&&S.sched[date][mi];
+  const out=[]; const seen=new Set();
+  tokens(v).forEach(t=>expand(t).forEach(x=>{if(!seen.has(x.id)){seen.add(x.id);out.push(x);}}));
+  return out;
+}
+function taskAvg(list){if(!list.length)return 0;let s=0;list.forEach(t=>s+=t.pct);return s/list.length;}
+
+/* ================= 统计 ================= */
+function renderStats(){
+  const total=S.segs.length||1;
+  let done=0,doing=0,todo=0,sum=0;
+  S.segs.forEach(s=>{const p=segPct(s.id);sum+=p;if(p>=100)done++;else if(p>=1)doing++;else todo++;});
+  const avg=sum/total;
+  const td=todayStr();const eps=new Set();
+  S.members.forEach((m,mi)=>{dayTasks(td,mi).forEach(t=>eps.add(t.ep));});
+  const assigned=S.segs.filter(s=>{const d=S.segData[s.id];return d&&(d.maker||d.editor);}).length;
+  const cards=[
+    ['整体完成度', avg.toFixed(1)+'%', avg, `${S.segs.length} 段平均`],
+    ['已完成段', done+' <small>/ '+S.segs.length+' 段</small>', done/total*100, '100% 的段落'],
+    ['进行中段', doing+' <small>段</small>', doing/total*100, '1–99%'],
+    ['未开始段', todo+' <small>段</small>', todo/total*100, '0%'],
+    ['已派人员', assigned+' <small>/ '+S.segs.length+' 段</small>', assigned/total*100, '已指派制作/剪辑'],
+    ['今日在拍', eps.size?Array.from(eps).sort((a,b)=>a-b).map(e=>'EP'+e).join(' '):'未排', 0, td]
+  ];
+  document.getElementById('stats').innerHTML=cards.map(c=>
+    `<div class="stat"><div class="k">${c[0]}</div><div class="v">${c[1]}</div>
+     <div class="bar"><i style="width:${Math.min(100,c[2])}%"></i></div>
+     <div class="k" style="margin:6px 0 0">${c[3]}</div></div>`).join('');
+  document.getElementById('bigBar').style.width=avg+'%';
+  document.getElementById('bigNum').textContent=avg.toFixed(1)+'%';
+  document.getElementById('bigTxt').textContent=`已完成 ${done} 段 · 进行中 ${doing} 段 · 未开始 ${todo} 段（共 ${S.segs.length} 段）`;
+}
+function renderActs(){
+  document.getElementById('acts').innerHTML=ACTS.map(a=>{
+    let s=0,n=0,dn=0;
+    S.segs.forEach(sg=>{const e=epOf(sg.id);
+      if(e>=a.from&&e<=a.to){const p=segPct(sg.id);s+=p;n++;if(p>=100)dn++;}});
+    const p=n?s/n:0;
+    return `<div class="act"><div class="t">${a.name}</div><div class="r">${a.desc}</div>
+      <div class="bar"><i style="width:${p}%"></i></div>
+      <div class="p">${p.toFixed(1)}% · 已完成 ${dn}/${n} 段</div></div>`;
+  }).join('');
+}
+function renderGrid(){
+  document.getElementById('grid42').innerHTML=allEps().map(ep=>{
+    const p=epAvg(ep),c=heat(p),n=segsOfEp(ep).length;
+    return `<div class="ep" data-ep="${ep}" style="background:${c.bg};color:${c.fg}" title="EP${ep} 共 ${n} 段">
+      <div class="n">EP${ep}</div><div class="p">${p.toFixed(0)}% · ${n}段</div></div>`;
+  }).join('');
+}
+function renderPeople(){
+  const td=todayStr();
+  document.getElementById('people').innerHTML=S.members.map((m,mi)=>{
+    let mine=[],done=0,doing=0,todo=0,sum=0;
+    S.segs.forEach(sg=>{
+      const d=S.segData[sg.id]||{};
+      if((d.maker&&d.maker.indexOf(m)>=0)||(d.editor&&d.editor.indexOf(m)>=0)){
+        mine.push(sg.id);const p=segPct(sg.id);sum+=p;
+        if(p>=100)done++;else if(p>=1)doing++;else todo++;
+      }
+    });
+    const rate=mine.length?sum/mine.length:0;
+    const list=dayTasks(td,mi);
+    const todayTxt=list.length
+      ? '今日：'+list.map(t=>`EP${t.ep}·${t.label} ${t.pct}%`).join('　')
+      : '今日未排任务';
+    return `<div class="pcard">
+      <div class="top"><span class="nm">${esc(m)}</span><span class="role">${mine.length} 段在手</span></div>
+      <div class="num"><div>已完成<b>${done}</b></div><div>进行中<b>${doing}</b></div><div>待开始<b>${todo}</b></div>
+        <div style="margin-left:auto;text-align:right">完成率<b>${rate.toFixed(0)}%</b></div></div>
+      <div class="bar"><i style="width:${rate}%"></i></div>
+      <div class="foot">${mine.length?mine.slice(0,14).join(' ')+(mine.length>14?' …':''):'未指派段落'}</div>
+      <div class="foot" style="color:#5B6472">${esc(todayTxt)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ================= 排期矩阵 ================= */
+function slotCell(date,mi){
+  const list=dayTasks(date,mi);
+  const avg=taskAvg(list);
+  const c=list.length?heat(avg):{bg:'#fff',fg:'#1F2937'};
+  let lines='';
+  if(!list.length){
+    lines='<div class="q" style="opacity:.45">点击选择任务</div>';
+  }else{
+    const show=list.slice(0,2);
+    lines=show.map(t=>`<div class="e">EP${t.ep} · ${t.label}</div>`).join('');
+    if(list.length>2)lines+=`<div class="e" style="font-weight:500;opacity:.8">…另 ${list.length-2} 段</div>`;
+    lines+=`<div class="q">${avg.toFixed(0)}% · ${statusOf(avg)}${list.length>1?' · '+list.length+'段':''}</div>`;
+  }
+  return `<td class="slot" data-date="${date}" data-mem="${mi}" style="background:${c.bg};color:${c.fg}">
+    <div class="in">${lines}</div></td>`;
+}
+function renderMx(){
+  const ds=dates(),td=todayStr();
+  let h='<thead><tr><th style="min-width:96px">日期</th><th style="width:38px">周</th>';
+  S.members.forEach((m,i)=>{h+=`<th class="mem" data-mem="${i}" title="双击改名">${esc(m)}</th>`;});
+  h+='</tr></thead><tbody>';
+  ds.forEach(d=>{
+    const wd=WEEK[new Date(d+'T00:00:00').getDay()];
+    h+=`<tr><td class="date ${d===td?'today':''}">${d}</td><td class="${d===td?'today':''}">${wd}</td>`;
+    S.members.forEach((m,i)=>{h+=slotCell(d,i);});
+    h+='</tr>';
+  });
+  document.getElementById('mx').innerHTML=h+'</tbody>';
+}
+
+/* ================= 当日明细 ================= */
+function fillDayPick(){
+  const sel=document.getElementById('dayPick');
+  const cur=sel.value||todayStr();
+  const ds=dates();
+  sel.innerHTML=ds.map(d=>`<option value="${d}">${d} 周${WEEK[new Date(d+'T00:00:00').getDay()]}${d===todayStr()?'（今天）':''}</option>`).join('');
+  sel.value=ds.indexOf(cur)>=0?cur:(ds[0]||todayStr());
+}
+function renderDay(){
+  const d=document.getElementById('dayPick').value||todayStr();
+  let all=[];
+  document.getElementById('dayBox').innerHTML=S.members.map((m,mi)=>{
+    const list=dayTasks(d,mi);
+    list.forEach(t=>all.push(t));
+    const avg=taskAvg(list);
+    const lines=list.map(t=>{
+      const sg=segById(t.id);
+      return `<div class="segline"><span class="epn">EP${t.ep}</span> <b>${t.label}</b> ${esc(sg?sg.name:'')}<br>
+        ${stTag(t.pct)} 完成 <b>${t.pct}%</b></div>`;
+    }).join('');
+    return `<div class="dperson">
+      <div class="nm">${esc(m)}<span>${list.length?list.length+' 段 · 平均 '+avg.toFixed(0)+'%':'无任务'}</span></div>
+      ${lines||'<div class="empty">当天未排任务</div>'}
+      ${list.length?`<div class="bar" style="height:6px;background:#EEF0F3;border-radius:3px;overflow:hidden;margin-top:8px">
+        <i style="display:block;height:100%;width:${avg}%;background:#2E5C8A"></i></div>`:''}
+    </div>`;
+  }).join('');
+  const eps=new Set(all.map(t=>t.ep));
+  document.getElementById('daySum').textContent=`当天共 ${all.length} 段任务 · 涉及 ${eps.size} 集 · 平均完成 ${taskAvg(all).toFixed(0)}%`;
+}
+
+/* ================= 段落总表（按集分组） ================= */
+const folded={};
+function pplOpts(cur){
+  return ['<option value="">—</option>'].concat(S.members.map(m=>
+    `<option value="${esc(m)}"${cur&&cur.indexOf(m)>=0?' selected':''}>${esc(m)}</option>`)).join('');
+}
+function segMatches(sg){
+  const fEp=document.getElementById('fEp').value, fPpl=document.getElementById('fPpl').value;
+  const fSt=document.getElementById('fSt').value, key=document.getElementById('fKey').value.trim().toLowerCase();
+  const d=S.segData[sg.id]||{};
+  if(fEp!=='all'&&epOf(sg.id)!==parseInt(fEp,10))return false;
+  if(fPpl!=='all'&&!((d.maker||'').indexOf(fPpl)>=0||(d.editor||'').indexOf(fPpl)>=0))return false;
+  const p=segPct(sg.id);
+  if(fSt==='done'&&p<100)return false;
+  if(fSt==='doing'&&!(p>=1&&p<100))return false;
+  if(fSt==='todo'&&p>0)return false;
+  if(key&&!(sg.id.toLowerCase().indexOf(key)>=0||String(sg.name).toLowerCase().indexOf(key)>=0))return false;
+  return true;
+}
+function renderSegTable(){
+  const eps=allEps();
+  const shown=[];
+  /* 列宽：全部按百分比分配（随容器伸缩），场景列只吃剩余约 31%，
+     剩余宽度按比例分给人员/难度/字数/完成/状态/操作，避免行中间出现大片空白 */
+  const W=['4.1%','4.7%',null,'9.8%','9.8%','8.9%','6%','6.9%','6.6%','11.9%'];
+  let h='<colgroup>'+W.map(w=>`<col${w?` style="width:${w}"`:''}>`).join('')+'</colgroup>';
+  h+=`<thead><tr>
+    <th>集</th><th>段</th><th style="text-align:left">场景 / 内容</th>
+    <th>制作人员</th><th>剪辑人员</th>
+    <th>难度</th><th>字数</th><th>完成%</th>
+    <th>状态</th><th>操作</th></tr></thead><tbody>`;
+  eps.forEach(ep=>{
+    const segs=segsOfEp(ep).filter(sg=>segMatches(sg));
+    if(!segs.length)return;
+    segs.forEach(sg=>shown.push(sg.id));
+    const p=epAvg(ep), n=segsOfEp(ep).length;
+    const isFold=!!folded[ep];
+    h+=`<tr class="ephead" data-ep="${ep}">
+      <td class="lead" colspan="3"><div class="epbar">
+        <span class="foldbtn" data-fold="${ep}">${isFold?'▸':'▾'} EP${ep}</span>
+        <span class="epprog">共 ${n} 段 · 本集平均 ${p.toFixed(1)}%</span>
+      </div></td>
+      <td colspan="2"></td>
+      <td></td><td></td>
+      <td class="epnum">${p.toFixed(0)}%</td>
+      <td>${stTag(p)}</td>
+      <td class="epop"><button class="mini" data-addseg="${ep}" title="在本集下方新增一个子段落">＋ 新增段落</button></td>
+    </tr>`;
+    if(isFold)return;
+    segs.forEach(sg=>{
+      const d=S.segData[sg.id]||{pct:0,maker:'',editor:'',words:''};
+      const pct=segPct(sg.id), c=heat(pct);
+      h+=`<tr class="segrow">
+        <td>EP${epOf(sg.id)}</td>
+        <td><b>${sg.id}</b></td>
+        <td class="scene" title="${esc(sg.name)}"><div class="st">${esc(sg.name)}</div></td>
+        <td><select class="cell" data-maker="${sg.id}">${pplOpts(d.maker)}</select></td>
+        <td><select class="cell" data-editor="${sg.id}">${pplOpts(d.editor)}</select></td>
+        <td><select class="cell" data-diff="${sg.id}">${[1,2,3,4,5].map(k=>`<option value="${k}"${(sg.diff||3)===k?' selected':''}>${'★'.repeat(k)}${'☆'.repeat(5-k)}</option>`).join('')}</select></td>
+        <td><input class="cell" data-words="${sg.id}" value="${esc(d.words||'')}" placeholder="—"></td>
+        <td style="background:${c.bg};color:${c.fg}"><input class="cell" data-pct="${sg.id}" value="${pct}" style="color:${c.fg};font-weight:650"></td>
+        <td>${stTag(pct)}</td>
+        <td class="op"><button class="mini" data-nameseg="${sg.id}">改名</button><button class="mini" data-delseg="${sg.id}">删除</button></td>
+      </tr>`;
+    });
+  });
+  h+='</tbody>';
+  document.getElementById('segTable').innerHTML=h;
+  document.getElementById('fCount').textContent=`显示 ${shown.length} / ${S.segs.length} 段`;
+}
+function refreshAll(){renderStats();renderActs();renderGrid();renderPeople();renderMx();renderDay();}
+function renderAll(){refreshAll();renderSegTable();}
+
+/* ================= 弹层：选任务 ================= */
+let pick={date:null,mi:null,sel:new Set(),filter:''};
+function segPickerHtml(){
+  const eps=allEps();
+  const kw=pick.filter.toLowerCase();
+  let body='';
+  eps.forEach(ep=>{
+    const segs=segsOfEp(ep).filter(sg=>!kw||sg.id.toLowerCase().indexOf(kw)>=0||sg.name.toLowerCase().indexOf(kw)>=0);
+    if(!segs.length)return;
+    const allSel=segs.every(sg=>pick.sel.has(sg.id));
+    body+=`<div class="epg">EP${ep} · 平均 ${epAvg(ep).toFixed(0)}%
+      <span class="grow">
+        <button class="mini" data-pickall="${ep}" data-on="${allSel?0:1}">${allSel?'取消整集':'整集全选'}</button>
+      </span></div>`;
+    segs.forEach(sg=>{
+      const on=pick.sel.has(sg.id), p=segPct(sg.id);
+      body+=`<label class="pkrow"><input type="checkbox" data-pick="${sg.id}"${on?' checked':''}>
+        <span class="sid">${sg.id}</span><span class="nm">${esc(sg.name)}</span>
+        <span class="pct">${p}% · ${statusOf(p)}</span></label>`;
+    });
+  });
+  if(!body)body='<div class="empty" style="padding:14px">没有匹配的段落</div>';
+  return `<div class="mask" id="mask">
+    <div class="pop">
+      <div class="poph"><span>${esc(S.members[pick.mi])} · ${pick.date} 的任务</span><span class="x" id="popX">✕</span></div>
+      <div class="popsearch"><input id="popKey" placeholder="搜索段号或场景关键词" value="${esc(pick.filter)}"></div>
+      <div class="popbody" id="popBody">${body}</div>
+      <div class="popf">
+        <span class="tag" id="popCnt">已选 ${pick.sel.size} 段</span>
+        <span>
+          <button id="popClear">清空</button>
+          <button class="primary" id="popOk">确定</button>
+        </span>
+      </div>
+    </div></div>`;
+}
+function openPicker(date,mi){
+  pick={date:date,mi:mi,sel:new Set(dayTasks(date,mi).map(t=>t.id)),filter:''};
+  document.body.insertAdjacentHTML('beforeend',segPickerHtml());
+  document.getElementById('popKey').focus();
+}
+function closePicker(){const m=document.getElementById('mask');if(m)m.remove();}
+function redrawPicker(){
+  const b=document.getElementById('popBody');
+  if(!b)return;
+  const tmp=document.createElement('div');
+  tmp.innerHTML=segPickerHtml();
+  const nb=tmp.querySelector('#popBody');
+  b.innerHTML=nb.innerHTML;
+  const cc=document.getElementById('popCnt'); if(cc)cc.textContent='已选 '+pick.sel.size+' 段';
+}
+document.addEventListener('click',e=>{
+  /* 弹层内部 */
+  const mask=e.target.closest('#mask');
+  if(mask){
+    if(e.target.id==='popX'||e.target.id==='mask'){closePicker();return;}
+    const pa=e.target.closest('button[data-pickall]');
+    if(pa){
+      const ep=parseInt(pa.dataset.pickall,10), on=pa.dataset.on==='1';
+      segsOfEp(ep).forEach(sg=>{on?pick.sel.add(sg.id):pick.sel.delete(sg.id);});
+      redrawPicker();return;
+    }
+    if(e.target.id==='popClear'){pick.sel.clear();redrawPicker();return;}
+    if(e.target.id==='popOk'){
+      const arr=Array.from(pick.sel);
+      if(!S.sched[pick.date])S.sched[pick.date]={};
+      if(arr.length)S.sched[pick.date][pick.mi]=arr; else delete S.sched[pick.date][pick.mi];
+      save();closePicker();renderMx();renderDay();renderStats();renderPeople();
+      return;
+    }
+    return;
+  }
+  /* 热力图 */
+  const epEl=e.target.closest('.ep');
+  if(epEl){
+    const ep=parseInt(epEl.dataset.ep,10), segs=segsOfEp(ep);
+    const v=prompt(`EP${ep} 共 ${segs.length} 段（${segs.map(s=>s.id).join('、')}）\n把这一集所有段统一设为完成百分比（0–100）：`, epAvg(ep).toFixed(0));
+    if(v!==null){const p=Math.max(0,Math.min(100,parseInt(v,10)||0));
+      segs.forEach(sg=>S.segData[sg.id].pct=p);save();renderAll();}
+    return;
+  }
+  /* 矩阵格子 */
+  const slot=e.target.closest('td.slot');
+  if(slot){openPicker(slot.dataset.date,slot.dataset.mem);return;}
+  /* 表头改名 */
+  const th=e.target.closest('th.mem');
+  if(th){const i=th.dataset.mem;const v=prompt('人员姓名',S.members[i]);
+    if(v!==null&&v.trim()){S.members[i]=v.trim();save();renderAll();}return;}
+  /* 段落总表按钮 */
+  const fb=e.target.closest('[data-fold]');
+  if(fb){const ep=fb.dataset.fold;folded[ep]=!folded[ep];renderSegTable();return;}
+  const as=e.target.closest('[data-addseg]');
+  if(as){openAddSeg(parseInt(as.dataset.addseg,10));return;}
+  const ds=e.target.closest('[data-delseg]');
+  if(ds){const id=ds.dataset.delseg;delSeg(id);return;}
+  const ns=e.target.closest('[data-nameseg]');
+  if(ns){const id=ns.dataset.nameseg;const sg=segById(id);
+    const v=prompt(`修改 ${id} 的场景/内容`,sg?sg.name:'');if(v!==null&&v.trim()){sg.name=v.trim();save();renderSegTable();refreshAll();}return;}
+});
+/* 弹层内搜索 */
+document.addEventListener('input',e=>{
+  if(e.target.id==='popKey'){pick.filter=e.target.value;redrawPicker();
+    const el=document.getElementById('popKey'); if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}
+    return;}
+  const t=e.target;
+  if(t.dataset&&t.dataset.words!==undefined&&t.dataset.words){S.segData[t.dataset.words].words=t.value;save();return;}
+  if(t.dataset&&t.dataset.pct!==undefined&&t.dataset.pct){
+    let n=parseInt(t.value,10);if(isNaN(n))n=0;n=Math.max(0,Math.min(100,n));
+    S.segData[t.dataset.pct].pct=n;save();
+    clearTimeout(window._pt);window._pt=setTimeout(()=>{refreshAll();},420);return;}
+  if(t.id==='fKey'){clearTimeout(window._kt);window._kt=setTimeout(renderSegTable,220);return;}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  /* 弹层内勾选段落 */
+  if(t.dataset&&t.dataset.pick!=null&&t.dataset.pick){
+    if(t.checked)pick.sel.add(t.dataset.pick);else pick.sel.delete(t.dataset.pick);
+    const cc=document.getElementById('popCnt'); if(cc)cc.textContent='已选 '+pick.sel.size+' 段';
+    return;
+  }
+  if(t.dataset&&t.dataset.maker!=null&&t.dataset.maker){S.segData[t.dataset.maker].maker=t.value;save();refreshAll();return;}
+  if(t.dataset&&t.dataset.editor!=null&&t.dataset.editor){S.segData[t.dataset.editor].editor=t.value;save();refreshAll();return;}
+  if(t.dataset&&t.dataset.diff!=null&&t.dataset.diff){const sg=segById(t.dataset.diff);if(sg)sg.diff=parseInt(t.value,10);save();return;}
+  if(t.id==='dayPick'){renderDay();return;}
+  if(['fEp','fPpl','fSt'].indexOf(t.id)>=0){renderSegTable();return;}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closePicker();return;}
+  if(e.key==='Enter'){
+    if(e.target.id==='popKey'){e.preventDefault();return;}
+    if(e.target.closest&&e.target.closest('#mask')&&e.target.tagName!=='BUTTON'){e.preventDefault();
+      const ok=document.getElementById('popOk');if(ok)ok.click();}
+  }
+});
+
+/* ================= 新增 / 删除段落 ================= */
+let addCtx=null;
+function nextSegNo(ep){let mx=0;segsOfEp(ep).forEach(sg=>{const n=segNo(sg.id);if(n>mx)mx=n;});return mx+1;}
+function openAddSeg(ep){
+  const eps=allEps();
+  const ep0=ep||eps[eps.length-1]||1;
+  addCtx=ep0;
+  const html=`<div class="mask" id="mask2"><div class="pop" style="width:460px">
+    <div class="poph"><span>新增段落</span><span class="x" id="addX">✕</span></div>
+    <div class="form">
+      <label>所属集数
+        <select id="addEp">${eps.map(e=>`<option value="${e}"${e===ep0?' selected':''}>EP${e}（现有 ${segsOfEp(e).length} 段）</option>`).join('')}</select>
+      </label>
+      <label>新段号（自动推荐，可改）
+        <input id="addId" value="${ep0}-${nextSegNo(ep0)}">
+      </label>
+      <label>场景 / 内容
+        <input id="addName" placeholder="如：夜内 曼哈顿第七大道·戴维斯诊所大堂">
+      </label>
+      <label>难度
+        <select id="addDiff">${[1,2,3,4,5].map(k=>`<option value="${k}"${k===3?' selected':''}>${'★'.repeat(k)}${'☆'.repeat(5-k)}</option>`).join('')}</select>
+      </label>
+      <label>连续添加条数（一次最多 10 条）
+        <input id="addCount" type="number" min="1" max="10" value="1">
+      </label>
+    </div>
+    <div class="popf"><span></span><span>
+      <button id="addCancel">取消</button><button class="primary" id="addOk">添加</button></span></div>
+  </div></div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+  const sel=document.getElementById('addEp');
+  sel.onchange=()=>{const e=parseInt(sel.value,10);document.getElementById('addId').value=e+'-'+nextSegNo(e);};
+  document.getElementById('addName').focus();
+}
+document.addEventListener('click',e=>{
+  if(!document.getElementById('mask2'))return;
+  if(e.target.id==='addX'||e.target.id==='addCancel'||e.target.id==='mask2'){document.getElementById('mask2').remove();return;}
+  if(e.target.id==='addOk'){
+    const ep=parseInt(document.getElementById('addEp').value,10);
+    let id=normTok(document.getElementById('addId').value.trim());
+    const name=document.getElementById('addName').value.trim()||'（待填写）';
+    const diff=parseInt(document.getElementById('addDiff').value,10);
+    let cnt=parseInt(document.getElementById('addCount').value,10); if(isNaN(cnt))cnt=1; cnt=Math.max(1,Math.min(10,cnt));
+    if(!/^\d{1,2}-\d{1,3}$/.test(id)){alert('段号格式应为「集号-段号」，例如 12-3');return;}
+    let added=0;
+    for(let k=0;k<cnt;k++){
+      let n=segNo(id), e2=parseInt(id.split('-')[0],10);
+      if(k>0)n=nextSegNo(e2);
+      const nid=e2+'-'+n;
+      if(segById(nid))continue;
+      S.segs.push({id:nid,name:k===0?name:'（待填写）',diff:diff});
+      S.segData[nid]={pct:0,maker:'',editor:'',words:''};
+      added++;
+    }
+    S.segs.sort((a,b)=>epOf(a.id)-epOf(b.id)||segNo(a.id)-segNo(b.id));
+    save();document.getElementById('mask2').remove();
+    refreshEpFilter();renderAll();
+    alert(`已添加 ${added} 个段落`);
+    return;
+  }
+});
+function delSeg(id){
+  const sg=segById(id); if(!sg)return;
+  let used=0;
+  Object.keys(S.sched).forEach(d=>Object.keys(S.sched[d]).forEach(mi=>{
+    if(S.sched[d][mi]&&S.sched[d][mi].indexOf(id)>=0)used++;
+  }));
+  if(!confirm(`删除段落 ${id}（${sg.name}）？\n该段已被 ${used} 条排期引用，删除后会一并清除。`))return;
+  S.segs=S.segs.filter(s=>s.id!==id);
+  delete S.segData[id];
+  Object.keys(S.sched).forEach(d=>Object.keys(S.sched[d]).forEach(mi=>{
+    const arr=S.sched[d][mi]; if(!arr)return;
+    const f=arr.filter(x=>x!==id);
+    if(f.length)S.sched[d][mi]=f; else delete S.sched[d][mi];
+  }));
+  save();refreshEpFilter();renderAll();
+}
+
+/* ================= 顶部按钮 ================= */
+document.getElementById('btnAddSeg').onclick=()=>openAddSeg(null);
+document.getElementById('btnAddEp').onclick=()=>{
+  const eps=allEps(); const ep=eps[eps.length-1]+1;
+  if(!confirm(`新增 EP${ep}（先加 1 个段落 ${ep}-1，之后可继续加段）？`))return;
+  S.segs.push({id:ep+'-1',name:'（待填写）',diff:3});
+  S.segData[ep+'-1']={pct:0,maker:'',editor:'',words:''};
+  save();refreshEpFilter();renderAll();renderDay();
+};
+document.getElementById('btnAdd7').onclick=()=>{S.days+=7;save();fillDayPick();renderMx();};
+document.getElementById('btnToday').onclick=()=>{S.startDate=todayStr();save();fillDayPick();renderMx();renderStats();renderDay();};
+document.getElementById('btnReset').onclick=()=>{
+  if(confirm('清空全部排期与完成度，段落恢复为默认 96 段？（人员姓名保留）')){S=defaultState();save();refreshEpFilter();renderAll();renderDay();}
+};
+function refreshEpFilter(){
+  const sel=document.getElementById('fEp'); const cur=sel.value||'all';
+  sel.innerHTML='<option value="all">全部</option>'+allEps().map(e=>`<option value="${e}">EP${e}</option>`).join('');
+  sel.value=Array.prototype.some.call(sel.options,o=>o.value===cur)?cur:'all';
+}
+
+/* ================= 导出 ================= */
+function download(name,text,mime){
+  const b=new Blob([text],{type:mime||'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+function q(s){return '"'+String(s==null?'':s).replace(/"/g,'""')+'"';}
+document.getElementById('btnExportCsv').onclick=()=>{
+  let csv='\uFEFF';
+  csv+='【段落总表】\n集,段,场景/内容,制作人员,剪辑人员,难度,字数,完成%,状态\n';
+  S.segs.forEach(sg=>{const d=S.segData[sg.id]||{},p=segPct(sg.id);
+    csv+=[epOf(sg.id),sg.id,q(sg.name),q(d.maker||''),q(d.editor||''),sg.diff||3,q(d.words||''),p,statusOf(p)].join(',')+'\n';});
+  csv+='\n【每日每人任务】\n日期,周,'+S.members.join(',')+'\n';
+  dates().forEach(d=>{
+    const wd='周'+WEEK[new Date(d+'T00:00:00').getDay()];
+    const row=S.members.map((m,i)=>{
+      const list=dayTasks(d,i);
+      if(!list.length)return '';
+      return q(list.map(t=>'EP'+t.ep+'·'+t.label+'('+t.pct+'%)').join(' ')+' 平均'+taskAvg(list).toFixed(0)+'%');
+    });
+    csv+=[d,wd,row.join(',')].join(',')+'\n';
+  });
+  csv+='\n【人员汇总】\n姓名,在手段数,已完成,进行中,待开始,完成率\n';
+  S.members.forEach(m=>{
+    let c=0,dn=0,dg=0,td0=0,s=0;
+    S.segs.forEach(sg=>{const d=S.segData[sg.id]||{};
+      if((d.maker||'').indexOf(m)>=0||(d.editor||'').indexOf(m)>=0){
+        c++;const p=segPct(sg.id);s+=p;if(p>=100)dn++;else if(p>=1)dg++;else td0++;}});
+    csv+=[q(m),c,dn,dg,td0,(c?(s/c).toFixed(1):0)+'%'].join(',')+'\n';
+  });
+  download('剧组进度_'+todayStr()+'.csv',csv,'text/csv;charset=utf-8');
+};
+document.getElementById('btnExportJson').onclick=()=>{
+  download('进度看板备份_'+todayStr()+'.json',JSON.stringify(S,null,2),'application/json');
+};
+document.getElementById('btnImport').onclick=()=>document.getElementById('fileJson').click();
+document.getElementById('fileJson').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{localStorage.setItem(KEY,r.result);load();refreshEpFilter();fillDayPick();renderAll();renderDay();
+    syncAt=0; lastLocalWrite=Date.now(); if(cloudOK)pushNow(); alert('已导入，并已上传到云端');}
+    catch(err){alert('文件格式错误');}};
+  r.readAsText(f,'utf-8');e.target.value='';
+};
+
+/* ================= 云端同步 ================= */
+let pushTimer=null, pollTimer=null, pushing=false, pulling=false;
+let syncAt=0;          // 本地状态对应的云端版本时间（ms）
+let remoteAt=0, remoteBy='';
+let lastLocalWrite=0;  // 本地最后一次改动时间（ms）
+let suppressPush=false;
+let pendingRemote=false;
+const ME_KEY='wb_board_me';
+let myName='';
+
+function p2(n){return String(n).padStart(2,'0');}
+function fmtTime(v){
+  if(!v)return '';
+  const d=(v instanceof Date)?v:new Date(v);
+  if(isNaN(d.getTime()))return '';
+  return (d.getMonth()+1)+'/'+d.getDate()+' '+p2(d.getHours())+':'+p2(d.getMinutes());
+}
+function ts(v){const t=new Date(v).getTime();return isNaN(t)?0:t;}
+
+function setSync(kind,txt){
+  const d=document.getElementById('syncDot'); if(!d)return;
+  d.className='dot'+(kind?' '+kind:'');
+  document.getElementById('syncTxt').textContent=txt;
+  const rb=document.getElementById('btnRetry');
+  if(rb) rb.style.display=(kind==='err')?'':'none';
+}
+function setLast(){
+  const el=document.getElementById('syncLast'); if(!el)return;
+  el.textContent = remoteAt ? ('云端版本：'+(remoteBy||'未署名')+' · '+fmtTime(remoteAt)) : '';
+}
+function isTyping(){
+  const a=document.activeElement; if(!a)return false;
+  const t=(a.tagName||'').toUpperCase();
+  return t==='INPUT'||t==='TEXTAREA'||t==='SELECT';
+}
+function reRenderAll(){
+  refreshEpFilter(); fillDayPick(); renderAll(); renderDay();
+}
+
+/* 本地落盘 + 延时上传 */
+function schedulePush(){
+  lastLocalWrite=Date.now();
+  if(suppressPush)return;
+  if(!cloudOK){setSync('err','云端未连接（仅存本机）');return;}
+  setSync('push','有改动待上传…');
+  clearTimeout(pushTimer);
+  pushTimer=setTimeout(()=>pushNow(),1200);
+}
+
+async function pushNow(){
+  if(!cloudOK){setSync('err','云端未连接（仅存本机）');return;}
+  if(isTyping()){setTimeout(()=>pushNow(),1500);return;}   // 别在输入中途打断
+  if(pushing)return;
+  pushing=true;
+  const stamp=new Date().toISOString();
+  try{
+    // 先探测云端版本，若被他人更新过给出提示
+    const pre=await cloud.database.from('board_state')
+      .select('updated_at,updated_by').eq('id',ROW_ID).maybeSingle();
+    if(!pre.error&&pre.data){
+      const at=ts(pre.data.updated_at);
+      if(at&&syncAt&&at>syncAt+1500&&pre.data.updated_by!==myName){
+        console.warn('云端在你编辑期间被 '+(pre.data.updated_by||'他人')+' 更新，本次提交将覆盖该版本');
+      }
+    }
+    const {data,error}=await cloud.database.from('board_state')
+      .upsert({id:ROW_ID,data:S,updated_by:myName||'未署名',updated_at:stamp},{onConflict:'id'})
+      .select('updated_at,updated_by');
+    if(error)throw error;
+    const row=(Array.isArray(data)&&data[0])||null;
+    const at=row?ts(row.updated_at):ts(stamp);
+    syncAt=at; remoteAt=at; remoteBy=myName||'未署名';
+    lastLocalWrite=at;
+    setSync('ok','已同步到云端 · '+fmtTime(at));
+    setLast();
+  }catch(e){
+    setSync('err','上传失败：'+(e&&e.message?e.message:'网络异常')+'（已存本机，稍后自动重试）');
+    setTimeout(()=>{if(cloudOK)pushNow();},8000);
+  }finally{ pushing=false; }
+}
+
+async function pullNow(initial,force){
+  if(!cloudOK)return;
+  if(pulling)return;
+  pulling=true;
+  try{
+    const {data,error}=await cloud.database.from('board_state')
+      .select('data,updated_by,updated_at').eq('id',ROW_ID).maybeSingle();
+    if(error)throw error;
+    if(!data){
+      // 云端还没有这份看板 —— 用本机数据建一行
+      if(initial){ setSync('push','云端为空，正在上传本机数据…'); await pushNow(); }
+      else setSync('ok','已连接云端');
+      return;
+    }
+    const at=ts(data.updated_at);
+    remoteAt=at; remoteBy=data.updated_by||'';
+    setLast();
+    if(initial){ syncAt=0; }
+    if(at<=syncAt){ setSync('ok','已连接云端（本机已是最新）'); return; }
+    // 云端更新，但本机也有未上传改动
+    if(!force && !initial && lastLocalWrite>syncAt+1500){
+      pendingRemote=true;
+      setSync('push','有人刚更新了云端，但你本机也有未上传改动 —— 点「立即同步」以云端为准');
+      return;
+    }
+    if(!force && isTyping()){ setTimeout(()=>pullNow(false,false),1500); return; }
+    // 以云端为准
+    suppressPush=true;
+    try{ S=normalize(data.data||{}); localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
+    suppressPush=false;
+    syncAt=at; lastLocalWrite=at; pendingRemote=false;
+    reRenderAll();
+    setSync('ok','已拉取云端最新（'+(remoteBy||'未署名')+' · '+fmtTime(at)+'）');
+  }catch(e){
+    setSync('err','连接云端失败：'+(e&&e.message?e.message:'网络异常')+'（已存本机）');
+  }finally{ pulling=false; }
+}
+
+function startPoll(){
+  clearInterval(pollTimer);
+  pollTimer=setInterval(()=>{
+    const el=document.getElementById('autoSync');
+    if(el&&!el.checked)return;
+    if(document.hidden)return;
+    if(isTyping())return;
+    pullNow(false,false);
+  },15000);
+}
+
+/* 确保云端 SDK 已就绪；未就绪时按 SDK_URLS 顺序再试一遍 */
+function ensureSDK(){
+  if(typeof WorkBuddyCloud!=='undefined'&&WorkBuddyCloud.createWorkBuddyCloud) return Promise.resolve(true);
+  return new Promise(res=>{
+    let i=0;
+    (function next(){
+      if(i>=SDK_URLS.length) return res(false);
+      const s=document.createElement('script');
+      s.src=SDK_URLS[i++];
+      s.onload=()=>res(typeof WorkBuddyCloud!=='undefined'&&!!WorkBuddyCloud.createWorkBuddyCloud);
+      s.onerror=next;
+      document.head.appendChild(s);
+    })();
+  });
+}
+function scheduleCloudRetry(){
+  if(cloudRetryN>=6)return;
+  const wait=Math.min(20000, 2000*Math.pow(1.7,cloudRetryN++));
+  clearTimeout(cloudRetryTimer);
+  cloudRetryTimer=setTimeout(()=>{ cloudOK?pullNow(false,true):initCloud(); }, wait);
+}
+let cloudHooked=false;
+async function initCloud(){
+  try{ myName=localStorage.getItem(ME_KEY)||''; }catch(e){ myName=''; }
+  const sel=document.getElementById('mePick');
+  if(sel){
+    sel.innerHTML='<option value="">（未署名）</option>'+
+      S.members.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
+    sel.value=S.members.indexOf(myName)>=0?myName:'';
+    sel.onchange=()=>{
+      myName=sel.value;
+      try{localStorage.setItem(ME_KEY,myName);}catch(e){}
+      if(cloudOK)pushNow();
+    };
+  }
+  const okSDK = await ensureSDK();
+  if(!okSDK){
+    cloudOK=false;
+    setSync('err','云端组件没加载出来（网络被拦或断网）：请用在线网址 '+BOARD_URL+' 打开；恢复网络后点「重试连接」');
+    scheduleCloudRetry();
+    return;
+  }
+  try{
+    cloud=WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint:CLOUD_CFG.endpoint,
+      publishableKey:CLOUD_CFG.publishableKey
+    });
+    cloudOK=true;
+  }catch(e){
+    cloudOK=false;
+    setSync('err','云端未连接，数据只存本机：'+(e&&e.message?e.message:e));
+    scheduleCloudRetry();
+    return;
+  }
+  cloudRetryN=0;
+  setSync('push','正在读取云端…');
+  pullNow(true,false).then(()=>{ if(cloudOK)startPoll(); });
+  if(cloudHooked)return;
+  cloudHooked=true;
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden&&cloudOK){
+      const el=document.getElementById('autoSync');
+      if(el&&el.checked)pullNow(false,false);
+    }
+  });
+  window.addEventListener('beforeunload',()=>{
+    if(cloudOK&&lastLocalWrite>syncAt){ try{pushNow();}catch(e){} }
+  });
+}
+
+/* ================= 初始化 ================= */
+load();
+document.getElementById('fPpl').innerHTML='<option value="all">全部</option>'+S.members.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
+document.getElementById('fSt').innerHTML='<option value="all">全部</option><option value="todo">未开始</option><option value="doing">进行中</option><option value="done">已完成</option>';
+refreshEpFilter();
+fillDayPick();
+renderAll();
+renderDay();
+initCloud();
+
+function retryCloud(){
+  setSync('push','正在重新连接云端…');
+  if(!cloudOK||!cloud){ cloudRetryN=0; initCloud(); return; }
+  pullNow(false,true).then(()=>{ if(cloudOK&&lastLocalWrite>syncAt) pushNow(); });
+}
+document.getElementById('btnPull').onclick=()=>{
+  if(!cloudOK){ retryCloud(); return; }
+  pullNow(false,true);
+};
+document.getElementById('btnRetry').onclick=retryCloud;
+document.getElementById('autoSync').onchange=e=>{
+  if(e.target.checked){ startPoll(); pullNow(false,false); }
+  else clearInterval(pollTimer);
+};
+</script>
+</body>
+</html>
